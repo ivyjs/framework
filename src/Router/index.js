@@ -18,7 +18,7 @@ class Router {
      * @param options
      */
     _registerRoute(method, routeUrl, binding, options) {
-        this[method + 'Routes'].set(routeUrl, binding);
+        this[method + 'Routes'].set(routeUrl, { closure: binding, options: options});
         this.routesList.push({ method: method, path: routeUrl, options: options });
     }
 
@@ -75,15 +75,16 @@ class Router {
      *
      * @param httpMethod
      * @param routeUrl
-     * @param res
+     * @param response
      */
-    resolveRoute(httpMethod, routeUrl, res) {
+    resolveRoute(httpMethod, routeUrl, response) {
         let route = this.findMatchingRoute(httpMethod, routeUrl);
 
         if (route.handler)
-            return route.handler(res);
+            return Router.goThroughMiddleware(route, response);
 
-        return res.end('Route not found');
+        response.writeHead(404);
+        return response.end('Route not found');
     }
 
     /**
@@ -94,6 +95,71 @@ class Router {
      */
     findMatchingRoute(method, route) {
         return this[method + 'Routes'].get(route);
+    }
+
+    /**
+     * Pipe data through the middlewares.
+     *
+     * @param route
+     * @param response
+     * @return {*}
+     */
+    static goThroughMiddleware(route, response) {
+        if (route.handler.options && route.handler.options.middleware) {
+            let middlewareContainer = use('Ivy/MiddlewareContainer'),
+                Pipe = use('Ivy/Pipe');
+
+            let middlewaresList = middlewareContainer.parse(route.handler.options.middleware);
+
+            return Pipe.data({ route: route, response: response })
+                .through(middlewaresList)
+                .catch((err) => {
+                    console.error(err);
+                    response.writeHead(500);
+                    return response.end('Error piping through middleware. ' + err);
+                }).then((data) => {
+                    return Router.dispatchRoute(data.route, data.response);
+                });
+        }
+
+        return Router.dispatchRoute(route, response);
+    }
+
+    /**
+     * Dispatch a request to the handler.
+     *
+     * @param route
+     * @param response
+     * @return {*}
+     */
+    static dispatchRoute(route, response) {
+        let handlerResponse = route.handler.closure(route.params);
+        return Router.respondToRoute(handlerResponse, response);
+    }
+
+    /**
+     * Make a response to the request.
+     *
+     * @param handlerAnswer
+     * @param response
+     * @return {*}
+     */
+    static respondToRoute(handlerAnswer, response) {
+        if (typeof handlerAnswer === "string")
+            return response.end(handlerAnswer);
+
+        if (handlerAnswer['toString'] && typeof handlerAnswer !== 'object')
+            return response.end(handlerAnswer.toString());
+
+        try {
+            response.setHeader('content-type', 'application/json');
+            return response.end(JSON.stringify(handlerAnswer, null, 4));
+        } catch(e) {
+            console.error('Error while trying to stringify JSON object.');
+            console.error(e);
+            response.writeHead(500);
+            return response.end('Server error.');
+        }
     }
 }
 

@@ -5,10 +5,24 @@ let mocha = require('mocha'),
 chai.should();
 
 describe('Router', function () {
-    let router;
+    let router, response;
 
     beforeEach(function () {
         router = new Router();
+
+        response = {
+            end: function (text) {
+                return text;
+            },
+            setHeader: function (key, value) {
+                return {};
+            },
+            writeHead: function (value) {
+                return {};
+            }
+        };
+
+
     });
 
     it('should register get route', function () {
@@ -60,15 +74,15 @@ describe('Router', function () {
 
         let route1 = router.findMatchingRoute('GET', '/home/1');
         route1.should.have.all.keys('handler', 'params', 'splat', 'src');
-        route1.handler().should.equal(1);
+        route1.handler.closure().should.equal(1);
 
         let route2 = router.findMatchingRoute('GET', '/home/2');
         route2.should.have.all.keys('handler', 'params', 'splat', 'src');
-        route2.handler().should.equal(2);
+        route2.handler.closure().should.equal(2);
 
         let route3 = router.findMatchingRoute('POST', '/home/3');
         route3.should.have.all.keys('handler', 'params', 'splat', 'src');
-        route3.handler().should.equal(3);
+        route3.handler.closure().should.equal(3);
     });
 
     it('cant resolve missing route', function () {
@@ -93,22 +107,34 @@ describe('Router', function () {
             });
     });
 
-    it('resolve a route', function () {
+    it('resolve a route with casting', function () {
         router.get('/test', function () {
             return 1;
         });
 
-        router.resolveRoute('GET', '/test', {}).should.equal(1);
+        router.resolveRoute('GET', '/test', response).should.equal('1');
+    });
+
+    it('respond with string right away', function () {
+        router.get('/test/string', function () {
+            return "ok";
+        });
+
+        router.resolveRoute('GET', '/test/string', response).should.equal('ok');
     });
 
     it('should return Route not found if theres no route', function () {
-        let response = {
-            end: function (text) {
-                return text;
-            }
-        };
-
         router.resolveRoute('GET', '404', response).should.equal('Route not found');
-    })
+    });
+
+    it('parse object to string', function () {
+        router.get('/test/parsed', function () {
+            return {
+                "test": "test"
+            };
+        });
+
+        router.resolveRoute('GET', '/test/parsed', response).should.equal('{\n    "test": "test"\n}');
+    });
 
 });
