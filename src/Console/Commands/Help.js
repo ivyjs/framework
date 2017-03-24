@@ -1,4 +1,5 @@
-let Command = require('./Command');
+let Command = require('./Command'),
+    Helper = use('Ivy/Helper');
 
 class Help extends Command {
     /**
@@ -26,23 +27,8 @@ class Help extends Command {
         console.log('Available commands:');
         for (let key in this.parameters) {
             let command = use(this.parameters[key]);
-            console.log(`  ${Help.padEnd(command.commandName(), 20, ' ').green}${command.description()}`);
+            console.log(`  ${Helper.padEnd(command.commandName(), 20, ' ').green}${command.description()}`);
         }
-    }
-
-    /**
-     * Add char on the remaining place until length is reached.
-     *
-     * @param string
-     * @param length
-     * @param chars
-     * @return {*}
-     */
-    static padEnd(string, length, chars) {
-        const strLength = length ? string.length : 0;
-        return (length && strLength < length)
-            ? (string + chars.repeat(length - strLength))
-            : string
     }
 }
 
