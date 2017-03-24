@@ -31,18 +31,6 @@ describe('ClassScaffold', () => {
         scaffold.namespace.should.equal('App/Test/@{className}');
     });
 
-    it('generate file', (done) => {
-        let filePath = __dirname + '/ScaffoldTest/testClass.js';
-
-        scaffold.generateClass(filePath);
-        fs.readFile(filePath, (err, dataTest) => {
-            fs.readFile(__dirname + '/Classes/testClass.js', (err, dataShould) => {
-                dataTest.toString().should.equal(dataShould.toString());
-                done();
-            });
-        });
-    });
-
     it('generate method with empty body', () => {
         scaffold.methodList = [];
         scaffold.addMethod('test', 'Good one here', ['param1', 'param2']);
