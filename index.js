@@ -1,3 +1,3 @@
 require('./src/Ioc');
-require('./src/Helper');
+require('./src/Util/Helper');
 module.exports = require('./src/Server');

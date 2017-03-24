@@ -30,7 +30,7 @@ describe('Router', function () {
             res.end();
         });
         router.routesList.should.have.property('length').that.equals(1);
-        router.routesList[0].should.have.all.keys('method', 'path', 'options');
+        router.routesList[0].should.have.all.keys('method', 'path', 'options', 'closure');
     });
 
     it('should register post route', function () {
@@ -38,7 +38,7 @@ describe('Router', function () {
             res.end();
         });
         router.routesList.should.have.property('length').that.equals(1);
-        router.routesList[0].should.have.all.keys('method', 'path', 'options');
+        router.routesList[0].should.have.all.keys('method', 'path', 'options', 'closure');
     });
 
     it('should register put route', function () {
@@ -46,7 +46,7 @@ describe('Router', function () {
             res.end();
         });
         router.routesList.should.have.property('length').that.equals(1);
-        router.routesList[0].should.have.all.keys('method', 'path', 'options');
+        router.routesList[0].should.have.all.keys('method', 'path', 'options', 'closure');
     });
 
     it('should register delete route', function () {
@@ -54,7 +54,7 @@ describe('Router', function () {
             res.end();
         });
         router.routesList.should.have.property('length').that.equals(1);
-        router.routesList[0].should.have.all.keys('method', 'path', 'options');
+        router.routesList[0].should.have.all.keys('method', 'path', 'options', 'closure');
     });
 
     it('should register multiple routes', function () {
@@ -136,5 +136,11 @@ describe('Router', function () {
 
         router.resolveRoute('GET', '/test/parsed', response).should.equal('{\n    "test": "test"\n}');
     });
+
+    it('adds string as handler', function () {
+        router.get('/test/string', 'Controller');
+
+        router.routesList[0].should.have.property('closure').that.equals('Controller');
+    })
 
 });

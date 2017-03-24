@@ -19,7 +19,7 @@ class Router {
      */
     _registerRoute(method, routeUrl, binding, options) {
         this[method + 'Routes'].set(routeUrl, { closure: binding, options: options});
-        this.routesList.push({ method: method, path: routeUrl, options: options });
+        this.routesList.push({ method: method, path: routeUrl, options: options, closure: typeof binding === 'function' ? 'Function' : binding});
     }
 
     /**
