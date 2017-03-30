@@ -91,7 +91,7 @@ Description:
         help += "Options:\n";
 
         for (let option in this.options)
-            help += `  ${Helper.padEnd(option, 15, ' ')}  ${this.options[option].description}`;
+            help += `  ${Helper.padEnd(option, 15, ' ')}  ${this.options[option].description}\n`;
 
         help += `  ${Helper.padEnd('--help', 15, ' ')}  Show help menu`;
 

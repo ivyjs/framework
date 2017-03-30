@@ -61,7 +61,8 @@ class Console {
      * @return {*|string}
      */
     runHelp(command) {
-        return this.consolePrint(this.commandsContainer[command].help());
+        this.consolePrint(this.commandsContainer[command].help());
+        return true;
     }
 
     /**
