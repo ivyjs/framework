@@ -51,7 +51,8 @@ class Console {
      * @param content
      */
     consolePrint(content) {
-        return console.log(content);
+        console.log(content);
+        return true;
     }
 
     /**
