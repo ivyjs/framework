@@ -13,4 +13,10 @@ describe('Helper', () => {
     it('make string length 0 if length not provided', () => {
         Helper.padEnd('good', false, '*').should.equal('good');
     });
+
+    it('require from path should not throw', () => {
+        (() => {
+            return Helper.requireFromFolder('test/unit/Classes');
+        }).should.not.throw();
+    });
 });

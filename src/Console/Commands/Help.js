@@ -1,35 +1,14 @@
-let Command = require('./Command'),
+let Commander = use('Ivy/Commander'),
+    color = require('colors'),
     Helper = use('Ivy/Helper');
 
-class Help extends Command {
-    /**
-     * Get the command name.
-     *
-     * @return {string}
-     */
-    static commandName() {
-        return 'help';
-    }
-
-    /**
-     * Get the commands description.
-     *
-     * @return {string}
-     */
-    static description() {
-        return "Show the list of available commands.";
-    }
-
-    /**
-     * Run this command.
-     */
-    run() {
-        console.log('Available commands:');
-        for (let key in this.parameters) {
-            let command = use(this.parameters[key]);
-            console.log(`  ${Helper.padEnd(command.commandName(), 20, ' ').green}${command.description()}`);
+Commander.register('help')
+    .description('Display help message.')
+    .execute(() => {
+        let content = 'Available commands:\n';
+        let commandsList = Commander.getCommandsList();
+        for (let command in commandsList) {
+            content += `  ${Helper.padEnd(command, 20, ' ').green}${commandsList[command].descriptionText}\n`;
         }
-    }
-}
-
-namespace('Ivy/Command/Help', Help);
+        return content;
+    });

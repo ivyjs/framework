@@ -1,71 +1,37 @@
-let Command = require('./Command'),
+let Commander = use('Ivy/Commander'),
     Scaffold = require('../Scaffold'),
     color = require('colors'),
     path = require('path');
 
-class CreateMiddleware extends Command {
+Commander.register('make:middleware')
+    .description('Creates a new middleware.')
+    .usage('make:middleware {name}')
+    .execute((command) => {
+        if (!command.parameters[0])
+            return 'Missing middleware name.';
 
-    constructor() {
-        super();
-        this.scaffold = new Scaffold();
-    }
+        let generator = new MiddlewareScaffold();
 
-    /**
-     * Get the command name.
-     *
-     * @return {string}
-     */
-    static commandName() {
-        return 'make:middleware';
-    }
+        generator.scaffoldMiddleware(command.parameters[0]);
+        generator.generateFile(path.join(process.env.PWD, 'app', 'middleware', command.parameters[0] + '.js'));
+        return `Middleware ${command.parameters[0]} created.`.green;
+    });
 
-    /**
-     * Get the command description.
-     *
-     * @return {string}
-     */
-    static description() {
-        return "Creates new middleware.";
-    }
 
-    /**
-     * Display a help of a command.
-     */
-    static help() {
-        let help = `Description:
-  ${CreateMiddleware.description()}
-Usage: 
-  'node ivy make:middleware {middlewareName}'`;
-        console.log(help);
-    }
-
-    /**
-     * Run the command.
-     */
-    run() {
-        if (!this.parameters[0])
-            console.log('Missing middleware name.');
-
-        this.scaffoldMiddleware(this.parameters[0]);
-        this.scaffold.generateFile(path.join(process.env.PWD, 'app', 'middleware', this.parameters[0] + '.js'));
-        console.log(`Middleware ${this.parameters[0]} created.`.green);
-    }
-
+class MiddlewareScaffold extends Scaffold {
     /**
      * Scaffold the middleware.
      *
      * @param name
      */
     scaffoldMiddleware(name) {
-        this.scaffold.setTemplate(
+        this.setTemplate(
             `bind('App/${name}', function () {
     return function (data, next) {
         next();
     }
 });`
         );
-        this.scaffold.bind({name: name});
+        this.bind({name: name});
     }
 }
-
-namespace('Ivy/Command/CreateMiddleware', CreateMiddleware);

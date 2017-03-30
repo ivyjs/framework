@@ -1,4 +1,5 @@
-let color = require('colors');
+let color = require('colors'),
+    Command = require('./Commands/Command');
 
 class Console {
     constructor() {
@@ -6,37 +7,79 @@ class Console {
     }
 
     /**
-     * Registers a new command.
+     * Registers a new command and return a builder instance
      *
-     * @param namespace
+     * @param commandName
+     * @return {Command}
      */
-    addCommand(namespace) {
-        let command = use(namespace);
-        this.commandsContainer[command.commandName()] = namespace;
+    register(commandName) {
+        let tempCommand = new Command(commandName);
+        this.commandsContainer[commandName] = tempCommand;
+        return tempCommand;
     }
 
     /**
-     * Run a given command.
+     * Returns the list of the commands.
+     *
+     * @return {Array}
+     */
+    getCommandsList() {
+        return this.commandsContainer;
+    }
+
+    /**
+     * Execute a command.
+     *
+     * @param argumentsList
+     * @return {*}
+     */
+    run(argumentsList) {
+        if (!this.commandsContainer[argumentsList[0]])
+            return false;
+
+        if (argumentsList.includes('--help'))
+            return this.runHelp(argumentsList[0]);
+
+        let filteredArguments = this.filterArguments(argumentsList.slice(1));
+        let command = this.commandsContainer[argumentsList[0]];
+        return this.consolePrint(command.run(filteredArguments.parameters, filteredArguments.options));
+    }
+
+    /**
+     * Outputs the desired text in console.
+     *
+     * @param content
+     */
+    consolePrint(content) {
+        return console.log(content);
+    }
+
+    /**
+     * Run a help of the command.
      *
      * @param command
-     * @param parameters
+     * @return {*|string}
      */
-    run(command, parameters = {}) {
-        if (!this.commandsContainer[command]) {
-            console.error(`Command "${command}" not found.`.red);
-            return false;
-        }
+    runHelp(command) {
+        return this.consolePrint(this.commandsContainer[command].help());
+    }
 
-        let Command = use(this.commandsContainer[command]);
-        let action = new Command;
+    /**
+     * Filter arguments to get options and params list
+     *
+     * @param argumentsList
+     * @return {{parameters: Array, options: Array}}
+     */
+    filterArguments(argumentsList) {
+        let params = [],
+            options = [];
 
-        if (command === 'help')
-            parameters = this.commandsContainer;
+        if (Array.isArray(argumentsList))
+            argumentsList.forEach(argument => {
+                argument.startsWith('--') ? options.push(argument) : params.push(argument);
+            });
 
-        action.setCommandParameters(parameters);
-
-        parameters[0] === '--help' || parameters[0] === '-h' ? Command.help() : action.run();
-        return true;
+        return { parameters: params, options: options };
     }
 }
 

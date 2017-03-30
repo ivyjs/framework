@@ -1,5 +1,6 @@
 let mocha = require('mocha'),
     chai = require('chai'),
+    serv = require('../../'),
     Command = require('../../src/Console/Commands/Command');
 
 chai.should();
@@ -11,24 +12,48 @@ describe('Command', () => {
         command = new Command();
     });
     
-    it('gets the name of the command', () => {
-        Command.commandName().should.equal('default');
+    it('sets the name of command', () => {
+        command.name('test:command').should.be.instanceOf(Command);
+        command.commandName.should.equal('test:command');
     });
-    
-    it('binds the command parameters', () => {
-        command.setCommandParameters({ 'param1': 'cool' });
-        command.parameters.should.deep.equal({ 'param1': 'cool' });
+
+    it('sets the description', () => {
+        command.description('This is a test command').should.be.instanceOf(Command);
+        command.descriptionText.should.equal('This is a test command');
+    });
+
+    it('sets the usage example', () => {
+        command.usage('test:command {name}').should.be.instanceOf(Command);
+        command.usageText.should.equal('test:command {name}');
+    });
+
+    it('should add an option', () => {
+        command.option('--add', (command) => {
+            command.parameters[0] += 5;
+        }, 'Increase number by 5.').should.be.instanceOf(Command);
+
+        command.options.should.have.property('--add');
+        command.options['--add'].should.have.property('callback').that.is.instanceOf(Function);
+        command.options['--add'].should.have.property('description').that.equals('Increase number by 5.');
+    });
+
+    it('should create a callback for command', () => {
+        command.execute((command) => {
+            return `number is ${command.parameters[0]}`;
+        }).should.be.instanceOf(Command);
+
+        command.callback.should.be.instanceOf(Function);
+    });
+
+    it('returns help', () => {
+        command.help().should.equal('Command: \n    test:command\nDescription: \n    This is a test command\nUsage: \n    test:command {name}\nOptions:\n  --add            Increase number by 5.  --help           Show help menu');
     });
 
     it('runs the command', () => {
-        command.run().should.equal(false);
+        command.run([ 1 ], ['--add']).should.equal('number is 6');
     });
 
-    it('gets the description of the command', () => {
-        Command.description().should.equal('default');
-    });
-
-    it('gets the help of the app', () => {
-        Command.help().should.equal(false);
+    it('ignores the parameter if doesnt exist', () => {
+        command.run([1], ['--sub']).should.equal('number is 1');
     });
 });

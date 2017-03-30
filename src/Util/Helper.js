@@ -13,6 +13,19 @@ class Helper {
             ? (string + chars.repeat(length - strLength))
             : string
     }
+
+    /**
+     * Require every file from folder.
+     *
+     * @param folderPath
+     */
+    static requireFromFolder(folderPath) {
+        const path = require('path');
+        folderPath = path.join(process.env.PWD, folderPath);
+        require("fs").readdirSync(folderPath).forEach(function(file) {
+            require(path.join(folderPath, file));
+        });
+    };
 }
 
 namespace('Ivy/Helper', Helper);
