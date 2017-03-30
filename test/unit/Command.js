@@ -46,7 +46,7 @@ describe('Command', () => {
     });
 
     it('returns help', () => {
-        command.help().should.equal('Command: \n    test:command\nDescription: \n    This is a test command\nUsage: \n    test:command {name}\nOptions:\n  --add            Increase number by 5.  --help           Show help menu');
+        command.help().should.equal('Command: \n    test:command\nDescription: \n    This is a test command\nUsage: \n    test:command {name}\nOptions:\n  --add            Increase number by 5.\n  --help           Show help menu');
     });
 
     it('runs the command', () => {
