@@ -1,6 +1,6 @@
 {
   "name": "ivyframework",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Ivy framework for NodeJS",
   "main": "index.js",
   "keywords": [
