@@ -3,6 +3,9 @@
   "version": "0.3.3",
   "description": "Ivy framework for NodeJS",
   "main": "index.js",
+  "keywords": [
+    "ivyjs", "framework", "ivy", "fast", "optimized"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ivyjs/framework.git"
