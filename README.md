@@ -4,7 +4,7 @@
 With fast and intuitive interface, developing Ivy's nodejs applications is easy and fast. It provides you a fluent interface that you will love! Really high test coverege is there to ensure you that framework is stable and working as expected.
 
 
-[Documentation can be found here](https://github.com/ivyjs/docs)
+[Documentation can be found here](http://ivyframework.com/)
 
 # Setup
 
