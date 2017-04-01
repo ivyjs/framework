@@ -1,8 +1,12 @@
 # Ivy framework
 [![Build Status](https://travis-ci.org/ivyjs/framework.svg?branch=master)](https://travis-ci.org/ivyjs/framework)
 
-With fast and intuitive interface, developing Ivy's nodejs applications is easy and fast. It provides you a fluent interface that you will love! Really high test coverege is there to ensure you that framework is stable and working as expected.
+With intuitive interface, developing Ivy's nodejs applications is easy and fast. It provides you a fluent interface that you will love! Really high test coverege is there to ensure you that framework is stable and working as expected.
 
+# Why Node as a backend platform?
+
+If you are reading this, you have probably already decided to go for NodeJS, but if not, we will give you a few things to think about.
+First, your development cost will be much, much, lower, Node uses javascript, so even a frontend developers can find their way through. Its fast, and I mean really fast. Development using ivy reduces the required time to build your app, and allows you to do so without getting a headache. 
 
 [Documentation can be found here](http://ivyframework.com/)
 
