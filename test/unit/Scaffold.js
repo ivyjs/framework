@@ -1,5 +1,6 @@
 let mocha = require('mocha'),
     chai = require('chai'),
+    sinon = require('sinon'),
     Scaffold = require('../../src/Console/Scaffold'),
     fs = require('fs');
 
@@ -26,5 +27,11 @@ describe('Scaffold', () => {
     it('sets the empty value when binding is not given', () => {
         scaffold.bind({});
         scaffold.should.have.property('template').that.equals('Great !');
+    });
+
+    it('generates a file', () => {
+        sinon.stub(fs, 'writeFileSync').returns(true);
+        scaffold.generateFile('test/path').should.equal(true);
+        fs.writeFileSync.restore();
     });
 });

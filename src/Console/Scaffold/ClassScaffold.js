@@ -48,7 +48,7 @@ class ClassScaffold extends Scaffold {
             extendClass: this.extends,
             namespace: this.namespace
         });
-        this.generateFile(filePath);
+        return this.generateFile(filePath);
     }
 
     /**

@@ -1,5 +1,6 @@
 let mocha = require('mocha'),
     chai = require('chai'),
+    sinon = require('sinon'),
     fs = require('fs'),
     ClassScaffold = require('../../src/Console/Scaffold/ClassScaffold');
 
@@ -36,5 +37,11 @@ describe('ClassScaffold', () => {
         scaffold.addMethod('test', 'Good one here', ['param1', 'param2']);
         scaffold.generateTemplate();
         scaffold.template.should.equal("class @{className} {\n\t/**\n\t* Good one here\n\t**/\n\ttest(param1, param2) {\n\t\t\n\n\t}\n}\n\nnamespace(\'App/Test/@{className}\', @{className});");
+    });
+
+    it('generates a file', () => {
+        sinon.stub(fs, 'writeFileSync').returns(true);
+        scaffold.generateClass('test/path').should.equal(true);
+        fs.writeFileSync.restore();
     });
 });

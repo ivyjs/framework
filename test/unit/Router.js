@@ -112,7 +112,7 @@ describe('Router', function () {
             return 1;
         });
 
-        router.resolveRoute('GET', '/test', response).should.equal('1');
+        router.resolveRoute({method: 'GET', url: '/test'}, response).should.equal('1');
     });
 
     it('respond with string right away', function () {
@@ -120,11 +120,11 @@ describe('Router', function () {
             return "ok";
         });
 
-        router.resolveRoute('GET', '/test/string', response).should.equal('ok');
+        router.resolveRoute({method: 'GET', url: '/test/string'}, response).should.equal('ok');
     });
 
     it('should return Route not found if theres no route', function () {
-        router.resolveRoute('GET', '404', response).should.equal('Route not found');
+        router.resolveRoute({method: 'GET', url: '404'}, response).should.equal('Route not found');
     });
 
     it('parse object to string', function () {
@@ -134,7 +134,7 @@ describe('Router', function () {
             };
         });
 
-        router.resolveRoute('GET', '/test/parsed', response).should.equal('{\n    "test": "test"\n}');
+        router.resolveRoute({method: 'GET', url: '/test/parsed'}, response).should.equal('{\n    "test": "test"\n}');
     });
 
     it('adds string as handler', function () {

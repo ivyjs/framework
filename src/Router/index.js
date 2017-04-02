@@ -18,8 +18,13 @@ class Router {
      * @param options
      */
     _registerRoute(method, routeUrl, binding, options) {
-        this[method + 'Routes'].set(routeUrl, { closure: binding, options: options});
-        this.routesList.push({ method: method, path: routeUrl, options: options, closure: typeof binding === 'function' ? 'Function' : binding});
+        this[method + 'Routes'].set(routeUrl, {closure: binding, options: options});
+        this.routesList.push({
+            method: method,
+            path: routeUrl,
+            options: options,
+            closure: typeof binding === 'function' ? 'Function' : binding
+        });
     }
 
     /**
@@ -73,15 +78,14 @@ class Router {
     /**
      * Resolve a given route.
      *
-     * @param httpMethod
-     * @param routeUrl
+     * @param request
      * @param response
      */
-    resolveRoute(httpMethod, routeUrl, response) {
-        let route = this.findMatchingRoute(httpMethod, routeUrl);
+    resolveRoute(request, response) {
+        let route = this.findMatchingRoute(request.method, request.url);
 
         if (route.handler)
-            return Router.goThroughMiddleware(route, response);
+            return Router.goThroughMiddleware(route, request, response);
 
         response.writeHead(404);
         return response.end('Route not found');
@@ -101,28 +105,39 @@ class Router {
      * Pipe data through the middlewares.
      *
      * @param route
+     * @param request
      * @param response
      * @return {*}
      */
-    static goThroughMiddleware(route, response) {
-        if (route.handler.options && route.handler.options.middleware) {
-            let middlewareContainer = use('Ivy/MiddlewareContainer'),
-                Pipe = use('Ivy/Pipe');
+    static goThroughMiddleware(route, request, response) {
+        if (!Router.hasMiddlewareOption(route))
+            return Router.dispatchRoute(route, response);
 
-            let middlewaresList = middlewareContainer.parse(route.handler.options.middleware);
+        let middlewareContainer = use('Ivy/MiddlewareContainer'),
+            Pipe = use('Ivy/Pipe');
 
-            return Pipe.data({ route: route, response: response })
-                .through(middlewaresList)
-                .catch((err) => {
-                    console.error(err);
-                    response.writeHead(500);
-                    return response.end('Error piping through middleware. ' + err);
-                }).then((data) => {
-                    return Router.dispatchRoute(data.route, data.response);
-                });
-        }
+        let middlewaresList = middlewareContainer.parse(route.handler.options.middleware);
 
-        return Router.dispatchRoute(route, response);
+        return Pipe.data({route: route, request: request, response: response})
+            .through(middlewaresList)
+            .catch((err) => {
+                console.error(err);
+                response.writeHead(500);
+                return response.end('Error piping through middleware. ' + err);
+            }).then((data) => {
+                return Router.dispatchRoute(data.route, data.response);
+            });
+
+    }
+
+    /**
+     * Check if route has middleware to go through.
+     *
+     * @param route
+     * @return {string|string}
+     */
+    static hasMiddlewareOption(route) {
+        return route.handler.options && route.handler.options.middleware;
     }
 
     /**
@@ -154,7 +169,7 @@ class Router {
         try {
             response.setHeader('content-type', 'application/json');
             return response.end(JSON.stringify(handlerAnswer, null, 4));
-        } catch(e) {
+        } catch (e) {
             console.error('Error while trying to stringify JSON object.');
             console.error(e);
             response.writeHead(500);

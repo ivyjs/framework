@@ -32,7 +32,7 @@ class Scaffold {
      * @param path
      */
     generateFile(path) {
-        fs.writeFileSync(path, this.template);
+        return fs.writeFileSync(path, this.template);
     }
 }
 

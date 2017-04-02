@@ -10,7 +10,7 @@ class Server {
      */
     start() {
         http.createServer((req, res) => {
-            this.router.resolveRoute(req.method, req.url, res);
+            this.router.resolveRoute(req, res);
         }).listen(use('Ivy/Config').get('app.port'));
     }
 }
