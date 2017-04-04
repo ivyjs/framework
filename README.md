@@ -1,4 +1,5 @@
 # Ivy framework
+[![npm version](https://badge.fury.io/js/ivyframework.svg)](https://badge.fury.io/js/ivyframework)
 [![Build Status](https://travis-ci.org/ivyjs/framework.svg?branch=master)](https://travis-ci.org/ivyjs/framework)
 [![dependencies Status](https://david-dm.org/ivyjs/framework/status.svg)](https://david-dm.org/ivyjs/framework)
 [![Coverage Status](https://coveralls.io/repos/github/ivyjs/framework/badge.svg?branch=master)](https://coveralls.io/github/ivyjs/framework?branch=master)
