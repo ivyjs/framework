@@ -1,5 +1,6 @@
 # Ivy framework
 [![Build Status](https://travis-ci.org/ivyjs/framework.svg?branch=master)](https://travis-ci.org/ivyjs/framework)
+[![dependencies Status](https://david-dm.org/ivyjs/framework/status.svg)](https://david-dm.org/ivyjs/framework)
 
 With intuitive interface, developing Ivy's nodejs applications is easy and fast. It provides you a fluent interface that you will love! Really high test coverege is there to ensure you that framework is stable and working as expected.
 
