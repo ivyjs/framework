@@ -4,7 +4,6 @@ node_js:
 install:
   - npm install
 script:
-  - npm run-script cover
-
+  - npm run-script coverage
 after_script:
   - npm install coveralls@2.10.0 && cat ./coverage/lcov.info | coveralls
