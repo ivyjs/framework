@@ -88,12 +88,35 @@ describe('Ioc', function () {
         });
     });
 
+    it('call function triggers a method of passed object with additional parameters', () => {
+        let exampleObject = Ioc.use('Ex/singleton');
+        app().call(exampleObject, 'testFunction', ['good', 'bad']).should.deep.equal({ arg1: 'good', arg2: 'bad' });
+    });
+
+    it('call throws if function doesnt exists', () => {
+        let exampleObject = Ioc.use('Ex/singleton');
+        (() => {
+            return app().call(exampleObject, 'notHere');
+        }).should.throw(Error);
+    });
+
+    it('make creates an instance of namespace binding', () => {
+        app().make('Ex/namespace').should.be.instanceOf(Example);
+    });
+
+    it('throws if make namespace is not found', () => {
+        (() => {
+            return app().make('Ex/notfound');
+        }).should.throw(Error);
+    });
+
     it('have global functions available', function () {
         use.should.be.instanceOf(Function);
         namespace.should.be.instanceOf(Function);
         bind.should.be.instanceOf(Function);
         singleton.should.be.instanceOf(Function);
         alias.should.be.instanceOf(Function);
+        app.should.be.instanceOf(Function);
     });
 
 });

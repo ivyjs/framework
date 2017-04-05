@@ -36,7 +36,7 @@ describe('ClassScaffold', () => {
         scaffold.methodList = [];
         scaffold.addMethod('test', 'Good one here', ['param1', 'param2']);
         scaffold.generateTemplate();
-        scaffold.template.should.equal("class @{className} {\n\t/**\n\t* Good one here\n\t**/\n\ttest(param1, param2) {\n\t\t\n\n\t}\n}\n\nnamespace(\'App/Test/@{className}\', @{className});");
+        scaffold.template.should.equal("class @{className} {\n\n\t/**\n\t* Good one here\n\t**/\n\ttest(param1, param2) {\n\t\t\n\t}\n}\n\nnamespace(\'App/Test/@{className}\', @{className});");
     });
 
     it('generates a file', () => {

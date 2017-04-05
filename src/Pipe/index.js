@@ -1,6 +1,6 @@
 class Pipe {
-    constructor(sharedData) {
-        this.sharedData = sharedData || {};
+    constructor(sharedData = {}) {
+        this.sharedData = sharedData;
     }
 
     /**

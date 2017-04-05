@@ -26,6 +26,16 @@ class Helper {
             require(path.join(folderPath, file));
         });
     };
+
+    /**
+     * Ensure that data is array.
+     *
+     * @param data
+     * @return {[*]}
+     */
+    static ensureArray(data) {
+        return Array.isArray(data) ? data : [data];
+    }
 }
 
 namespace('Ivy/Helper', Helper);

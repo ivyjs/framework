@@ -125,6 +125,33 @@ class Ioc {
         return Ioc.bind(namespace, binding, true, deferred);
     }
 
+    /**
+     * Calls a function of binding and apply the parameters list.
+     *
+     * @param binding
+     * @param functionName
+     * @param parameters
+     * @return {*}
+     */
+    static call(binding, functionName, parameters = []) {
+        if (!binding[functionName])
+            throw new Error(`Function ${functionName} not found.`);
+
+        return binding[functionName].apply(null, parameters);
+    }
+
+    /**
+     * Instantiate a namespace binding right away.
+     *
+     * @param namespace
+     * @return {*}
+     */
+    static make(namespace) {
+        let result;
+        if (result = _namespaces[namespace])
+            return new result;
+        throw new Error(`Namespace ${namespace} not found.`);
+    }
 }
 
 global.use = Ioc.use;
@@ -132,5 +159,9 @@ global.namespace = Ioc.namespace;
 global.singleton = Ioc.singleton;
 global.alias = Ioc.alias;
 global.bind = Ioc.bind;
+
+global.app = function () {
+    return Ioc;
+};
 
 module.exports = Ioc;
