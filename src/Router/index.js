@@ -1,4 +1,5 @@
-let HttpHash = require('http-hash');
+let HttpHash = require('http-hash'),
+    ControllerDispatcher = require('./ControllerDispatcher');
 
 class Router {
     constructor() {
@@ -148,7 +149,8 @@ class Router {
      * @return {*}
      */
     static dispatchRoute(route, response) {
-        let handlerResponse = route.handler.closure(route.params);
+        let handler = route.handler.closure;
+        let handlerResponse = typeof handler === 'string' ? ControllerDispatcher.dispatchRoute(handler, route.params) : handler(route.params);
         return Router.respondToRoute(handlerResponse, response);
     }
 
@@ -170,11 +172,11 @@ class Router {
             response.setHeader('content-type', 'application/json');
             return response.end(JSON.stringify(handlerAnswer, null, 4));
         } catch (e) {
-            console.error('Error while trying to stringify JSON object.');
-            console.error(e);
+            console.error('Error while trying to stringify JSON object. ' + e);
             response.writeHead(500);
             return response.end('Server error.');
         }
+
     }
 }
 

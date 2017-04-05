@@ -1,6 +1,8 @@
 let mocha = require('mocha'),
     chai = require('chai'),
-    Router = require('../../src/Router');
+    sinon = require('sinon'),
+    Router = require('../../src/Router'),
+    ControllerDispatcher = require('../../src/Router/ControllerDispatcher');
 
 chai.should();
 
@@ -18,11 +20,15 @@ describe('Router', function () {
                 return {};
             },
             writeHead: function (value) {
-                return {};
+                return value;
             }
         };
 
+    });
 
+    afterEach(function () {
+        if (JSON.stringify['restore'])
+            JSON.stringify.restore();
     });
 
     it('should register get route', function () {
@@ -141,6 +147,32 @@ describe('Router', function () {
         router.get('/test/string', 'Controller');
 
         router.routesList[0].should.have.property('closure').that.equals('Controller');
-    })
+    });
+
+    it('returns a 500 error if json cannot be parsed to string', () => {
+        sinon.stub(JSON, 'stringify').throws("Error");
+
+        router.get('/test/errors', function () {
+            return {
+                "test": "test"
+            };
+        });
+        router.resolveRoute({method: 'GET', url: '/test/errors'}, response).should.equal('Server error.');
+    });
+
+    it('goes through the controller', () => {
+        let dispatch = sinon.stub(ControllerDispatcher, 'dispatchRoute').returns(true);
+        let responder = sinon.stub(Router, 'respondToRoute').returns(true);
+        let route = {
+            handler: { closure: "TestController" },
+            params: {}
+        };
+
+        Router.dispatchRoute(route, response);
+        dispatch.restore();
+        responder.restore();
+        sinon.assert.calledOnce(dispatch);
+        sinon.assert.calledOnce(responder);
+    });
 
 });

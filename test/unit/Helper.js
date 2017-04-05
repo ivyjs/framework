@@ -19,4 +19,9 @@ describe('Helper', () => {
             return Helper.requireFromFolder('test/unit/Classes');
         }).should.not.throw();
     });
+
+    it('ensures that data is array', () => {
+        Helper.ensureArray(['test']).should.deep.equal(['test']);
+        Helper.ensureArray('test').should.deep.equal(['test']);
+    });
 });
