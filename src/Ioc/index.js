@@ -136,7 +136,7 @@ class Ioc {
     static call(binding, functionName, parameters = []) {
         if (!binding[functionName])
             throw new Error(`Function ${functionName} not found.`);
-
+        parameters = Array.isArray(parameters) ? parameters : [parameters];
         return binding[functionName].apply(null, parameters);
     }
 
