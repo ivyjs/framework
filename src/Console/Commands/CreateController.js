@@ -1,37 +1,39 @@
 let Commander = use('Ivy/Commander'),
-    Scaffold = require('../Scaffold'),
+    ClassScaffold = require('../Scaffold/ClassScaffold'),
     color = require('colors'),
     path = require('path');
 
-Commander.register('make:middleware')
-    .description('Creates a new middleware.')
-    .usage('make:middleware {name}')
+Commander.register('make:controller')
+    .description('Creates a new controller.')
+    .usage('make:controller {name}')
+    .option('--resource', function(command) {
+        command.resource = true;
+    }, 'Description of red option.')
     .execute((command) => {
         if (!command.parameters[0])
-            return 'Missing middleware name.';
+            return 'Missing controller name.';
 
-        let generator = new MiddlewareScaffold();
+        let generator = new ControllerScaffold(command.parameters[0], command.resource);
 
-        generator.scaffoldMiddleware(command.parameters[0]);
-        generator.generateFile(path.join(process.env.PWD, 'app', 'middleware', command.parameters[0] + '.js'));
-        return `Middleware ${command.parameters[0]} created.`.green;
+        generator.generateClass(path.join(process.env.PWD, 'app', 'controller', command.parameters[0] + '.js'));
+        return `Controller ${command.parameters[0]} created.`.green;
     });
 
 
-class MiddlewareScaffold extends Scaffold {
-    /**
-     * Scaffold the middleware.
-     *
-     * @param name
-     */
-    scaffoldMiddleware(name) {
-        this.setTemplate(
-            `bind('App/${name}', function () {
-    return function (data, next) {
-        next();
+class ControllerScaffold extends ClassScaffold {
+    constructor(controllerName, isResource) {
+        super(controllerName);
+        this.setNamespace(`App/Controller/${controllerName}`);
+
+        if (isResource)
+            this.addResourceMethods();
     }
-});`
-        );
-        this.bind({name: name});
+
+    addResourceMethods() {
+        this.addMethod('index', 'Show all the results.');
+        this.addMethod('show', 'Show resource.\n\t*\n\t* @param request', ['request']);
+        this.addMethod('create', 'Creates a resource.\n\t*\n\t* @param request', ['request']);
+        this.addMethod('update', 'Updates a resource.\n\t*\n\t* @param request', ['request']);
+        this.addMethod('remove', 'Delete a resource.\n\t*\n\t* @param request', ['request']);
     }
 }

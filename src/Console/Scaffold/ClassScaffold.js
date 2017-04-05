@@ -27,12 +27,12 @@ class ClassScaffold extends Scaffold {
      * @param params
      * @param body
      */
-    addMethod(name, comment, params, body) {
+    addMethod(name, comment, params = [], body) {
         this.methodList.push({
             name: name,
             comment: comment,
             param: params.join(', '),
-            body: body ? body : "\n"
+            body: body ? body : ""
         });
     }
 
@@ -58,7 +58,7 @@ class ClassScaffold extends Scaffold {
         let template = 'class @{className} {\n';
 
         this.methodList.forEach((method) => {
-            template += '\t/**\n';
+            template += '\n\t/**\n';
             template += `\t* ${method.comment}\n`;
             template += `\t**/\n`;
             template += `\t${method.name}(${method.param})`;

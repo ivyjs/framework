@@ -100,6 +100,16 @@ describe('Ioc', function () {
         }).should.throw(Error);
     });
 
+    it('make creates an instance of namespace binding', () => {
+        app().make('Ex/namespace').should.be.instanceOf(Example);
+    });
+
+    it('throws if make namespace is not found', () => {
+        (() => {
+            return app().make('Ex/notfound');
+        }).should.throw(Error);
+    });
+
     it('have global functions available', function () {
         use.should.be.instanceOf(Function);
         namespace.should.be.instanceOf(Function);

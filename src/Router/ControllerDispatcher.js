@@ -9,7 +9,6 @@ class ControllerDispatcher {
         let [controllerName, methodName] = handler.split('@');
 
         let controller = ControllerDispatcher.getController(controllerName);
-
         return app().call(controller, methodName, parameters);
     }
 
@@ -19,7 +18,7 @@ class ControllerDispatcher {
      * @param controllerName
      */
     static getController(controllerName) {
-        return use(`App/Controller/${controllerName}`);
+        return app().make(`App/Controller/${controllerName}`);
     }
 }
 

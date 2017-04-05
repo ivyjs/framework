@@ -9,4 +9,5 @@ singleton('Ivy/Commander', function () {
 require('./Commands/Help');
 require('./Commands/RouteList');
 
+require('./Commands/CreateController');
 require('./Commands/CreateMiddleware');

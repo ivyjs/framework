@@ -140,6 +140,18 @@ class Ioc {
         return binding[functionName].apply(null, parameters);
     }
 
+    /**
+     * Instantiate a namespace binding right away.
+     *
+     * @param namespace
+     * @return {*}
+     */
+    static make(namespace) {
+        let result;
+        if (result = _namespaces[namespace])
+            return new result;
+        throw new Error(`Namespace ${namespace} not found.`);
+    }
 }
 
 global.use = Ioc.use;

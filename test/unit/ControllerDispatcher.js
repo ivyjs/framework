@@ -7,18 +7,18 @@ chai.should();
 
 describe('ControllerDispatcher', () => {
     it('returns an instance of controller with a given namespace', () => {
-        sinon.stub(global, 'use').returns(true);
+        sinon.stub(app(), 'make').returns(true);
         ControllerDispatcher.getController('TestNamespace').should.equal(true);
-        global.use.restore();
+        app().make.restore();
     });
 
     it('dispatches a route', () => {
-        sinon.stub(global, 'use').returns({
+        sinon.stub(app(), 'make').returns({
             goodHandler: function (param) {
                 return param;
             }
         });
         ControllerDispatcher.dispatchRoute('TestNamespace@goodHandler', ['test']).should.equal('test');
-        global.use.restore();
+        app().make.restore();
     })
 });
