@@ -162,6 +162,9 @@ class Router {
      * @return {*}
      */
     static respondToRoute(handlerAnswer, response) {
+        if (!handlerAnswer)
+            return response.end();
+
         if (typeof handlerAnswer === "string")
             return response.end(handlerAnswer);
 
