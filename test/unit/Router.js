@@ -160,6 +160,12 @@ describe('Router', function () {
         router.resolveRoute({method: 'GET', url: '/test/errors'}, response).should.equal('Server error.');
     });
 
+    it('nothing to return', () => {
+        router.get('/test/nothing', function () {
+        });
+        router.resolveRoute({method: 'GET', url: '/test/nothing'}, response);
+    });
+
     it('goes through the controller', () => {
         let dispatch = sinon.stub(ControllerDispatcher, 'dispatchRoute').returns(true);
         let responder = sinon.stub(Router, 'respondToRoute').returns(true);
