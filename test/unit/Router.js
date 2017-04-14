@@ -181,4 +181,29 @@ describe('Router', function () {
         sinon.assert.calledOnce(responder);
     });
 
+    it('creates a resource', () => {
+        router.resource('post', 'PostController');
+
+        router.routesList.should.have.property('length').that.equals(5);
+
+        router.routesList[0].should.have.property('method').that.equals('GET');
+        router.routesList[0].should.have.property('path').that.equals('post');
+        router.routesList[0].should.have.property('closure').that.equals('PostController@index');
+
+        router.routesList[1].should.have.property('method').that.equals('GET');
+        router.routesList[1].should.have.property('path').that.equals('post/:id');
+        router.routesList[1].should.have.property('closure').that.equals('PostController@show');
+
+        router.routesList[2].should.have.property('method').that.equals('POST');
+        router.routesList[2].should.have.property('path').that.equals('post');
+        router.routesList[2].should.have.property('closure').that.equals('PostController@create');
+
+        router.routesList[3].should.have.property('method').that.equals('PUT');
+        router.routesList[3].should.have.property('path').that.equals('post/:id');
+        router.routesList[3].should.have.property('closure').that.equals('PostController@update');
+
+        router.routesList[4].should.have.property('method').that.equals('DELETE');
+        router.routesList[4].should.have.property('path').that.equals('post/:id');
+        router.routesList[4].should.have.property('closure').that.equals('PostController@remove');
+    });
 });

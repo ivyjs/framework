@@ -179,8 +179,21 @@ class Router {
             response.writeHead(500);
             return response.end('Server error.');
         }
-
     }
+
+    /**
+     * Creates a new resource.
+     *
+     * @param resourceName
+     * @param controllerHandler
+     */
+    resource(resourceName, controllerHandler) {
+        this.get(resourceName, `${controllerHandler}@index`);
+        this.get(`${resourceName}/:id`, `${controllerHandler}@show`);
+        this.post(`${resourceName}`, `${controllerHandler}@create`);
+        this.put(`${resourceName}/:id`, `${controllerHandler}@update`);
+        this.delete(`${resourceName}/:id`, `${controllerHandler}@remove`);
+     }
 }
 
 module.exports = Router;
