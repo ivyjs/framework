@@ -186,13 +186,14 @@ class Router {
      *
      * @param resourceName
      * @param controllerHandler
+     * @param options
      */
-    resource(resourceName, controllerHandler) {
-        this.get(resourceName, `${controllerHandler}@index`);
-        this.get(`${resourceName}/:id`, `${controllerHandler}@show`);
-        this.post(`${resourceName}`, `${controllerHandler}@create`);
-        this.put(`${resourceName}/:id`, `${controllerHandler}@update`);
-        this.delete(`${resourceName}/:id`, `${controllerHandler}@remove`);
+    resource(resourceName, controllerHandler, options = {}) {
+        this.get(resourceName, `${controllerHandler}@index`, options);
+        this.get(`${resourceName}/:id`, `${controllerHandler}@show`, options);
+        this.post(`${resourceName}`, `${controllerHandler}@create`, options);
+        this.put(`${resourceName}/:id`, `${controllerHandler}@update`, options);
+        this.delete(`${resourceName}/:id`, `${controllerHandler}@remove`, options);
      }
 }
 
