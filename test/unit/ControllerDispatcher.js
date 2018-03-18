@@ -12,13 +12,14 @@ describe('ControllerDispatcher', () => {
         app().make.restore();
     });
 
-    it('dispatches a route', () => {
+    it('dispatches a route', async () => {
         sinon.stub(app(), 'make').returns({
             goodHandler: function (param) {
                 return param;
             }
         });
-        ControllerDispatcher.dispatchRoute('TestNamespace@goodHandler', ['test']).should.equal('test');
+
+        (await ControllerDispatcher.dispatchRoute('TestNamespace@goodHandler', ['test'])).should.equal('test');
         app().make.restore();
     })
 });

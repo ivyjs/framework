@@ -133,11 +133,15 @@ class Ioc {
      * @param parameters
      * @return {*}
      */
-    static call(binding, functionName, parameters = []) {
+    static async call(binding, functionName, parameters = []) {
         if (!binding[functionName])
             throw new Error(`Function ${functionName} not found.`);
         parameters = Array.isArray(parameters) ? parameters : [parameters];
-        return binding[functionName].apply(null, parameters);
+        try {
+            return await binding[functionName].apply(binding, parameters);
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     /**

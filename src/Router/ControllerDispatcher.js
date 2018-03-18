@@ -5,11 +5,15 @@ class ControllerDispatcher {
      * @param handler
      * @param parameters
      */
-    static dispatchRoute(handler, parameters) {
+    static async dispatchRoute(handler, parameters) {
         let [controllerName, methodName] = handler.split('@');
 
         let controller = ControllerDispatcher.getController(controllerName);
-        return app().call(controller, methodName, parameters);
+        try {
+            return await app().call(controller, methodName, parameters);
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     /**

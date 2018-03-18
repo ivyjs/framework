@@ -82,11 +82,19 @@ class Router {
      * @param request
      * @param response
      */
-    resolveRoute(request, response) {
+    async resolveRoute(request, response) {
         let route = this.findMatchingRoute(request.method, request.url);
 
-        if (route.handler)
-            return Router.goThroughMiddleware(route, request, response);
+        if (route.handler) {
+            try {
+                return await Router.goThroughMiddleware(route, request, response);
+            } catch (e) {
+                throw new Error(e);
+                console.error('Error while trying to resolve route. ' + e);
+                response.writeHead(500);
+                return response.end('Server error.');
+            }
+        }
 
         response.writeHead(404);
         return response.end('Route not found');
@@ -110,9 +118,14 @@ class Router {
      * @param response
      * @return {*}
      */
-    static goThroughMiddleware(route, request, response) {
-        if (!Router.hasMiddlewareOption(route))
-            return Router.dispatchRoute(route, response);
+    static async goThroughMiddleware(route, request, response) {
+        if (!Router.hasMiddlewareOption(route)) {
+            try {
+                return await Router.dispatchRoute(route, response);
+            } catch (e) {
+                throw new Error(e);
+            }
+        }
 
         let middlewareContainer = use('Ivy/MiddlewareContainer'),
             Pipe = use('Ivy/Pipe');
@@ -125,8 +138,12 @@ class Router {
                 console.error(err);
                 response.writeHead(500);
                 return response.end('Error piping through middleware. ' + err);
-            }).then((data) => {
-                return Router.dispatchRoute(data.route, data.response);
+            }).then(async (data) => {
+                try {
+                    return await Router.dispatchRoute(data.route, data.response);
+                } catch (e) {
+                    throw new Error(e);
+                }
             });
 
     }
@@ -148,10 +165,14 @@ class Router {
      * @param response
      * @return {*}
      */
-    static dispatchRoute(route, response) {
+    static async dispatchRoute(route, response) {
         let handler = route.handler.closure;
-        let handlerResponse = typeof handler === 'string' ? ControllerDispatcher.dispatchRoute(handler, route.params) : handler(route.params);
-        return Router.respondToRoute(handlerResponse, response);
+        try {
+            let handlerResponse = typeof handler === 'string' ? await ControllerDispatcher.dispatchRoute(handler, route.params) : await handler(route.params);
+            return Router.respondToRoute(handlerResponse, response);
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     /**
