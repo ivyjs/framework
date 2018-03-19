@@ -88,16 +88,16 @@ describe('Ioc', function () {
         });
     });
 
-    it('call function triggers a method of passed object with additional parameters', () => {
+    it('call function triggers a method of passed object with additional parameters', async () => {
         let exampleObject = Ioc.use('Ex/singleton');
-        app().call(exampleObject, 'testFunction', ['good', 'bad']).should.deep.equal({ arg1: 'good', arg2: 'bad' });
+        (await app().call(exampleObject, 'testFunction', ['good', 'bad'])).should.deep.equal({ arg1: 'good', arg2: 'bad' });
     });
 
     it('call throws if function doesnt exists', () => {
         let exampleObject = Ioc.use('Ex/singleton');
         (() => {
             return app().call(exampleObject, 'notHere');
-        }).should.throw(Error);
+        }).should.be.rejected;
     });
 
     it('make creates an instance of namespace binding', () => {

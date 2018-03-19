@@ -34,6 +34,23 @@ describe('RequestHandling', () => {
             });
     });
 
+    it('gets the async response from server', (done) => {
+        use('Ivy/Router').get('/async', function () {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('ok')
+                }, 500);
+            })
+        });
+
+        chai.request('http://localhost:3000')
+            .get('/async')
+            .end((err, res) => {
+                res.should.have.property('text').that.equal('ok');
+                done();
+            });
+    });
+
     it('adds a middleware to the route and go through it', (done) => {
         bind('TestMiddleware', () => {
             return function (data, next) {
