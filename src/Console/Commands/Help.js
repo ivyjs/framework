@@ -1,6 +1,5 @@
-let Commander = use('Ivy/Commander'),
-    color = require('colors'),
-    Helper = use('Ivy/Helper');
+const Commander = use('Ivy/Commander');
+const Helper = use('Ivy/Helper');
 
 Commander.register('help')
     .description('Display help message.')

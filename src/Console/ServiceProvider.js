@@ -2,8 +2,8 @@
 
 const Console = require('.');
 
-singleton('Ivy/Commander', function () {
-    return new Console;
+singleton('Ivy/Commander', function() {
+    return new Console();
 });
 
 require('./Commands/Help');

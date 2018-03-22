@@ -29,11 +29,12 @@ class ObjectHelper {
      *
      * @param key
      * @param defaultValue
-     * @return {undefined} || {*}
+     * @return {boolean} || {*}
      */
     get(key, defaultValue) {
-        if (!key)
+        if (!key) {
             return false;
+        }
 
         return this.has(key) ? this.collection[key] : defaultValue;
     }
@@ -46,20 +47,24 @@ class ObjectHelper {
      * @return {*}
      */
     getWithDotNotation(key, defaultValue) {
-        if (!key)
+        if (!key) {
             return false;
+        }
 
-        if (this.has(key))
+        if (this.has(key)) {
             return this.collection[key];
+        }
 
-        let splittedPath = key.split('.'),
-            iterator = this.collection;
+        let splittedPath = key.split('.');
+        let iterator = this.collection;
 
         for (let i = 0; i < splittedPath.length; i++) {
-            if (this.hasInCollection(iterator, splittedPath[i]))
+            if (this.hasInCollection(iterator, splittedPath[i])) {
                 iterator = iterator[splittedPath[i]];
-            else
-                return defaultValue;
+                continue;
+            }
+
+            return defaultValue;
         }
         return iterator;
     }

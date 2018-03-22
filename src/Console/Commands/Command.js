@@ -1,7 +1,6 @@
-let Helper = use('Ivy/Helper');
+const Helper = use('Ivy/Helper');
 
 class Command {
-
     constructor(commandName) {
         this.parameters = [];
         this.commandName = commandName;
@@ -83,15 +82,17 @@ Description:
     ${this.descriptionText}
 `;
 
-        if (this.usageText)
+        if (this.usageText) {
             help += `Usage: 
     ${this.usageText}
 `;
+        }
 
-        help += "Options:\n";
+        help += 'Options:\n';
 
-        for (let option in this.options)
+        for (let option in this.options) {
             help += `  ${Helper.padEnd(option, 15, ' ')}  ${this.options[option].description}\n`;
+        }
 
         help += `  ${Helper.padEnd('--help', 15, ' ')}  Show help menu`;
 
@@ -105,8 +106,9 @@ Description:
         this.parameters = parameters;
 
         options.forEach((option) => {
-            if (this.options[option])
+            if (this.options[option]) {
                 this.options[option].callback(this);
+            }
         });
 
         return this.callback(this);

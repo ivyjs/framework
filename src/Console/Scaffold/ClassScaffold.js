@@ -1,7 +1,6 @@
 let Scaffold = require('.');
 
 class ClassScaffold extends Scaffold {
-
     constructor(className) {
         super();
         this.className = className;
@@ -18,7 +17,6 @@ class ClassScaffold extends Scaffold {
         this.namespace = namespace;
     }
 
-
     /**
      * Adds a new method to the list.
      *
@@ -32,7 +30,7 @@ class ClassScaffold extends Scaffold {
             name: name,
             comment: comment,
             param: params.join(', '),
-            body: body ? body : ""
+            body: body || ''
         });
     }
 
@@ -66,8 +64,8 @@ class ClassScaffold extends Scaffold {
             template += `\t\t${method.body}\n`;
             template += `\t}\n`;
         });
-        template += '}\n\n'
-                + `namespace('${this.namespace}', @{className});`;
+        template += '}\n\n' +
+                `namespace('${this.namespace}', @{className});`;
         this.setTemplate(template);
     }
 }

@@ -1,5 +1,5 @@
-let HttpHash = require('http-hash'),
-    ControllerDispatcher = require('./ControllerDispatcher');
+const HttpHash = require('http-hash');
+const ControllerDispatcher = require('./ControllerDispatcher');
 
 class Router {
     constructor() {
@@ -83,19 +83,29 @@ class Router {
      * @param response
      */
     async resolveRoute(request, response) {
-        let route = this.findMatchingRoute(request.method, request.url);
+        const route = this.findMatchingRoute(request.method, request.url);
 
-        if (route.handler) {
-            try {
-                return await Router.goThroughMiddleware(route, request, response);
-            } catch (e) {
-                throw new Error(e);
-                console.error('Error while trying to resolve route. ' + e);
-                response.writeHead(500);
-                return response.end('Server error.');
-            }
+        if (!route.handler) {
+            return this.notFoundResponse(response);
         }
 
+        try {
+            return await Router.goThroughMiddleware(route, request, response);
+        } catch (e) {
+            console.error('Error while trying to resolve route. ' + e);
+            response.writeHead(500);
+            response.end('Server error.');
+            throw new Error(e);
+        }
+    }
+
+    /**
+     * Route not found
+     * - return 404 error
+     *
+     * @param response
+     */
+    notFoundResponse(response) {
         response.writeHead(404);
         return response.end('Route not found');
     }
@@ -111,7 +121,7 @@ class Router {
     }
 
     /**
-     * Pipe data through the middlewares.
+     * Check if data should go through a middleware.
      *
      * @param route
      * @param request
@@ -127,25 +137,36 @@ class Router {
             }
         }
 
-        let middlewareContainer = use('Ivy/MiddlewareContainer'),
-            Pipe = use('Ivy/Pipe');
+        return Router.pipeMiddleware(route, request, response);
+    }
 
-        let middlewaresList = middlewareContainer.parse(route.handler.options.middleware);
+    /**
+     * Pipe data through a middleware
+     *
+     * @param route
+     * @param request
+     * @param response
+     * @returns {Promise<void>}
+     */
+    static async pipeMiddleware(route, request, response) {
+        const middlewareContainer = use('Ivy/MiddlewareContainer');
+        const Pipe = use('Ivy/Pipe');
+
+        let middlewareList = middlewareContainer.parse(route.handler.options.middleware);
 
         return Pipe.data({route: route, request: request, response: response})
-            .through(middlewaresList)
+            .through(middlewareList)
             .catch((err) => {
                 console.error(err);
                 response.writeHead(500);
                 return response.end('Error piping through middleware. ' + err);
-            }).then(async (data) => {
+            }).then(async(data) => {
                 try {
                     return await Router.dispatchRoute(data.route, data.response);
                 } catch (e) {
                     throw new Error(e);
                 }
             });
-
     }
 
     /**
@@ -166,9 +187,12 @@ class Router {
      * @return {*}
      */
     static async dispatchRoute(route, response) {
-        let handler = route.handler.closure;
+        const handler = route.handler.closure;
         try {
-            let handlerResponse = typeof handler === 'string' ? await ControllerDispatcher.dispatchRoute(handler, route.params) : await handler(route.params);
+            const handlerResponse = typeof handler === 'string'
+                ? await ControllerDispatcher.dispatchRoute(handler, route.params)
+                : await handler(route.params);
+
             return Router.respondToRoute(handlerResponse, response);
         } catch (e) {
             throw new Error(e);
@@ -183,14 +207,17 @@ class Router {
      * @return {*}
      */
     static respondToRoute(handlerAnswer, response) {
-        if (!handlerAnswer)
+        if (!handlerAnswer) {
             return response.end();
+        }
 
-        if (typeof handlerAnswer === "string")
+        if (typeof handlerAnswer === 'string') {
             return response.end(handlerAnswer);
+        }
 
-        if (handlerAnswer['toString'] && typeof handlerAnswer !== 'object')
+        if (handlerAnswer['toString'] && typeof handlerAnswer !== 'object') {
             return response.end(handlerAnswer.toString());
+        }
 
         try {
             response.setHeader('content-type', 'application/json');
@@ -215,7 +242,7 @@ class Router {
         this.post(`${resourceName}`, `${controllerHandler}@create`, options);
         this.put(`${resourceName}/:id`, `${controllerHandler}@update`, options);
         this.delete(`${resourceName}/:id`, `${controllerHandler}@remove`, options);
-     }
+    }
 }
 
 module.exports = Router;

@@ -9,9 +9,12 @@ class Server {
      * Start the application listener.
      */
     start() {
+        const port = use('Ivy/Config').get('app.port');
+
         http.createServer((req, res) => {
             this.router.resolveRoute(req, res);
-        }).listen(use('Ivy/Config').get('app.port'));
+        })
+            .listen(port);
     }
 }
 

@@ -1,7 +1,7 @@
-let config = require('.');
+const Config = require('.');
 
-singleton('Ivy/Config', function () {
-    let c = new config;
-    global.env = c.env;
-    return c;
+singleton('Ivy/Config', function() {
+    let configInstance = new Config();
+    global.env = configInstance.env;
+    return configInstance;
 });

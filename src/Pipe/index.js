@@ -31,14 +31,18 @@ class Pipe {
      * @return {*}
      */
     next(err) {
-        if (err)
+        if (err) {
             return this.errorHandler(err);
+        }
+
         if (this.throughList.length > 0) {
             let currentlyExecuting = this.throughList.pop();
-            return currentlyExecuting(this.sharedData, (err) => { this.next(err); });
+            return currentlyExecuting(this.sharedData, (err) => {
+                this.next(err);
+            });
         }
-        else
-            return this.thenHandler(this.sharedData);
+
+        return this.thenHandler(this.sharedData);
     }
 
     /**

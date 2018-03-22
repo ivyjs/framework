@@ -6,9 +6,9 @@ class ControllerDispatcher {
      * @param parameters
      */
     static async dispatchRoute(handler, parameters) {
-        let [controllerName, methodName] = handler.split('@');
+        const [controllerName, methodName] = handler.split('@');
+        const controller = ControllerDispatcher.getController(controllerName);
 
-        let controller = ControllerDispatcher.getController(controllerName);
         try {
             return await app().call(controller, methodName, parameters);
         } catch (e) {

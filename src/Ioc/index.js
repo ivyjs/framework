@@ -17,7 +17,7 @@ class Ioc {
             _bindings,
             _alias,
             _instances
-        }
+        };
     }
 
     /**
@@ -34,8 +34,9 @@ class Ioc {
             singleton: singleton
         };
 
-        if (singleton && !deferred)
+        if (singleton && !deferred) {
             Ioc.instantiate(namespace, binding, singleton);
+        }
     }
 
     /**
@@ -46,13 +47,11 @@ class Ioc {
      * @return {*}
      */
     static instantiate(namespace, closure, singleton) {
-        if (singleton && _instances[namespace])
-            return _instances[namespace];
+        if (singleton && _instances[namespace]) { return _instances[namespace]; }
 
         let instance = closure();
 
-        if (singleton)
-            _instances[namespace] = instance;
+        if (singleton) { _instances[namespace] = instance; }
 
         return instance;
     }
@@ -84,10 +83,11 @@ class Ioc {
      * @return {*}
      */
     static use(namespace) {
-        let binding;
+        const binding = Ioc.getByNamespace(namespace);
 
-        if (binding = Ioc.getByNamespace(namespace))
+        if (binding) {
             return binding;
+        }
 
         throw new Error(`Namespace ${namespace} not found.`);
     }
@@ -101,14 +101,17 @@ class Ioc {
     static getByNamespace(namespace) {
         let result;
 
-        if (result = _bindings[namespace])
+        if (result = _bindings[namespace]) {
             return Ioc.instantiate(namespace, result.closure, result.singleton);
+        }
 
-        if (result = _namespaces[namespace])
+        if (result = _namespaces[namespace]) {
             return result;
+        }
 
-        if (result = _alias[namespace])
+        if (result = _alias[namespace]) {
             return Ioc.getByNamespace(result);
+        }
 
         return false;
     }
@@ -134,8 +137,9 @@ class Ioc {
      * @return {*}
      */
     static async call(binding, functionName, parameters = []) {
-        if (!binding[functionName])
+        if (!binding[functionName]) {
             throw new Error(`Function ${functionName} not found.`);
+        }
         parameters = Array.isArray(parameters) ? parameters : [parameters];
         try {
             return await binding[functionName].apply(binding, parameters);
@@ -151,9 +155,10 @@ class Ioc {
      * @return {*}
      */
     static make(namespace) {
-        let result;
-        if (result = _namespaces[namespace])
-            return new result;
+        let Result = _namespaces[namespace];
+        if (Result) {
+            return new Result();
+        }
         throw new Error(`Namespace ${namespace} not found.`);
     }
 }
@@ -164,7 +169,7 @@ global.singleton = Ioc.singleton;
 global.alias = Ioc.alias;
 global.bind = Ioc.bind;
 
-global.app = function () {
+global.app = function() {
     return Ioc;
 };
 

@@ -1,5 +1,4 @@
-let color = require('colors'),
-    Command = require('./Commands/Command');
+const Command = require('./Commands/Command');
 
 class Console {
     constructor() {
@@ -21,7 +20,7 @@ class Console {
     /**
      * Returns the list of the commands.
      *
-     * @return {Array}
+     * @return {Object}
      */
     getCommandsList() {
         return this.commandsContainer;
@@ -34,11 +33,13 @@ class Console {
      * @return {*}
      */
     run(argumentsList) {
-        if (!this.commandsContainer[argumentsList[0]])
+        if (!this.commandsContainer[argumentsList[0]]) {
             return false;
+        }
 
-        if (argumentsList.includes('--help'))
+        if (argumentsList.includes('--help')) {
             return this.runHelp(argumentsList[0]);
+        }
 
         let filteredArguments = this.filterArguments(argumentsList.slice(1));
         let command = this.commandsContainer[argumentsList[0]];
@@ -73,13 +74,14 @@ class Console {
      * @return {{parameters: Array, options: Array}}
      */
     filterArguments(argumentsList) {
-        let params = [],
-            options = [];
+        let params = [];
+        let options = [];
 
-        if (Array.isArray(argumentsList))
+        if (Array.isArray(argumentsList)) {
             argumentsList.forEach(argument => {
                 argument.startsWith('--') ? options.push(argument) : params.push(argument);
             });
+        }
 
         return { parameters: params, options: options };
     }

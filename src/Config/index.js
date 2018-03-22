@@ -1,5 +1,5 @@
-const dotEnv = require('dotenv'),
-      ObjectHelper = require('../Util/ObjectHelper');
+const dotEnv = require('dotenv');
+const ObjectHelper = require('../Util/ObjectHelper');
 
 class Config {
     constructor() {

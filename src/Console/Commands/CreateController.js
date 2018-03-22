@@ -1,7 +1,6 @@
-let Commander = use('Ivy/Commander'),
-    ClassScaffold = require('../Scaffold/ClassScaffold'),
-    color = require('colors'),
-    path = require('path');
+const Commander = use('Ivy/Commander');
+const ClassScaffold = require('../Scaffold/ClassScaffold');
+const path = require('path');
 
 Commander.register('make:controller')
     .description('Creates a new controller.')
@@ -10,8 +9,9 @@ Commander.register('make:controller')
         command.resource = true;
     }, 'Description of red option.')
     .execute((command) => {
-        if (!command.parameters[0])
+        if (!command.parameters[0]) {
             return 'Missing controller name.';
+        }
 
         let generator = new ControllerScaffold(command.parameters[0], command.resource);
 
@@ -19,14 +19,12 @@ Commander.register('make:controller')
         return `Controller ${command.parameters[0]} created.`.green;
     });
 
-
 class ControllerScaffold extends ClassScaffold {
     constructor(controllerName, isResource) {
         super(controllerName);
         this.setNamespace(`App/Controller/${controllerName}`);
 
-        if (isResource)
-            this.addResourceMethods();
+        if (isResource) { this.addResourceMethods(); }
     }
 
     addResourceMethods() {

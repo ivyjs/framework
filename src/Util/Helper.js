@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 class Helper {
     /**
      * Add char on the remaining place until length is reached.
@@ -11,7 +14,7 @@ class Helper {
         const strLength = length ? string.length : 0;
         return (length && strLength < length)
             ? (string + chars.repeat(length - strLength))
-            : string
+            : string;
     }
 
     /**
@@ -20,9 +23,8 @@ class Helper {
      * @param folderPath
      */
     static requireFromFolder(folderPath) {
-        const path = require('path');
         folderPath = path.join(process.env.PWD, folderPath);
-        require("fs").readdirSync(folderPath).forEach(function(file) {
+        fs.readdirSync(folderPath).forEach(function(file) {
             require(path.join(folderPath, file));
         });
     };

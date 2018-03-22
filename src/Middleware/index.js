@@ -12,14 +12,15 @@ class MiddlewareContainer {
      * @param namespace
      */
     registerMiddleware(middleware, namespace) {
-        if (!namespace) {
-            for (let key in middleware)
-                if (middleware.hasOwnProperty(key))
-                    this.appendMiddleware(key, middleware[key]);
-            return;
+        if (namespace) {
+            return this.appendMiddleware(middleware, namespace);
         }
 
-        this.appendMiddleware(middleware, namespace);
+        for (let key in middleware) {
+            if (middleware.hasOwnProperty(key)) {
+                this.appendMiddleware(key, middleware[key]);
+            }
+        }
     }
 
     /**
@@ -39,13 +40,14 @@ class MiddlewareContainer {
      * @param list
      */
     registerGroup(group, list) {
-        if (!list) {
-            for (let key in group)
-                if (group.hasOwnProperty(key))
-                    this.appendGroup(key, group[key]);
-            return;
+        if (list) {
+            return this.appendGroup(group, list);
         }
-        this.appendGroup(group, list);
+        for (let key in group) {
+            if (group.hasOwnProperty(key)) {
+                this.appendGroup(key, group[key]);
+            }
+        }
     }
 
     /**
@@ -69,16 +71,21 @@ class MiddlewareContainer {
         middleware = MiddlewareContainer.parseMiddlewareType(middleware);
 
         for (let i = 0, middlewareLength = middleware.length; i < middlewareLength; i++) {
-            let tmpMiddleware;
+            let tmpMiddleware = this.middlewaresList[middleware[i]];
 
-            if (tmpMiddleware = this.middlewaresList[middleware[i]])
+            if (tmpMiddleware) {
                 handlersList.push(tmpMiddleware);
-            else if (tmpMiddleware = this.middlewareGroups[middleware[i]]) {
+                continue;
+            }
+
+            tmpMiddleware = this.middlewareGroups[middleware[i]];
+
+            if (tmpMiddleware) {
                 let group = this.resolveGroup(tmpMiddleware);
                 handlersList = handlersList.concat(group);
+                continue;
             }
-            else
-                throw new Error(`Middleware ${middleware[i]} not found.`);
+            throw new Error(`Middleware ${middleware[i]} not found.`);
         }
 
         return handlersList;
@@ -101,14 +108,15 @@ class MiddlewareContainer {
      * @return {Array}
      */
     resolveGroup(group) {
-        let resultList = [],
-            tmpMiddleware;
+        let resultList = [];
+        let tmpMiddleware;
 
         for (let i = 0, groupLength = group.length; i < groupLength; i++) {
             tmpMiddleware = this.middlewaresList[group[i]];
 
-            if (!tmpMiddleware)
+            if (!tmpMiddleware) {
                 throw new Error(`Middleware ${group[i]} not found.`);
+            }
 
             resultList.push(tmpMiddleware);
         }

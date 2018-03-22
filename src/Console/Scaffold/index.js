@@ -20,9 +20,9 @@ class Scaffold {
      * @param data
      */
     bind(data) {
-        this.template = this.template.replace(/\@{[^{}]+}/g, function(w) {
+        this.template = this.template.replace(/@{[^{}]+}/g, function(w) {
             w = w.slice(2, -1).trim();
-            return data[w] ? data[w] : "";
+            return data[w] ? data[w] : '';
         });
     }
 
