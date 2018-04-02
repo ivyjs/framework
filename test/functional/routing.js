@@ -1,32 +1,32 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    chaiHttp = require('chai-http'),
-    servicesList = require('./config/services');
+const mocha = require('mocha');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const servicesList = require('./config/services');
 
 chai.use(chaiHttp);
 chai.should();
 
-
 describe('RequestHandling', () => {
     before(() => {
-        let server = require('../../');
+        let Server = require('../../');
 
-        servicesList.providers.forEach((provider) => {
+        servicesList.providers.forEach(provider => {
             require(provider);
         });
 
         let config = use('Ivy/Config');
-        config.loadConfig('app', {'port': 3000});
+        config.loadConfig('app', { port: 3000 });
 
-        (new server).start();
+        new Server().start();
     });
 
-    it('gets the response from server for no param route', (done) => {
-        use('Ivy/Router').get('/', function () {
+    it('gets the response from server for no param route', done => {
+        use('Ivy/Router').get('/', function() {
             return 'ok';
         });
 
-        chai.request('http://localhost:3000')
+        chai
+            .request('http://localhost:3000')
             .get('/')
             .end((err, res) => {
                 res.should.have.property('text').that.equal('ok');
@@ -34,16 +34,17 @@ describe('RequestHandling', () => {
             });
     });
 
-    it('gets the async response from server', (done) => {
-        use('Ivy/Router').get('/async', function () {
-            return new Promise((resolve, reject) => {
+    it('gets the async response from server', done => {
+        use('Ivy/Router').get('/async', function() {
+            return new Promise(resolve => {
                 setTimeout(() => {
-                    resolve('ok')
+                    resolve('ok');
                 }, 500);
-            })
+            });
         });
 
-        chai.request('http://localhost:3000')
+        chai
+            .request('http://localhost:3000')
             .get('/async')
             .end((err, res) => {
                 res.should.have.property('text').that.equal('ok');
@@ -51,21 +52,26 @@ describe('RequestHandling', () => {
             });
     });
 
-    it('adds a middleware to the route and go through it', (done) => {
+    it('adds a middleware to the route and go through it', done => {
         bind('TestMiddleware', () => {
-            return function (data, next) {
-                data.route.params.id = "33";
+            return function(data, next) {
+                data.route.params.id = '33';
                 return next();
-            }
+            };
         });
 
         use('Ivy/MiddlewareContainer').registerMiddleware('test', 'TestMiddleware');
 
-        use('Ivy/Router').get('/:id', function (params) {
-            return params.id;
-        }, { middleware: 'test' });
+        use('Ivy/Router').get(
+            '/:id',
+            function(params) {
+                return params.id;
+            },
+            { middleware: 'test' }
+        );
 
-        chai.request('http://localhost:3000')
+        chai
+            .request('http://localhost:3000')
             .get('/20')
             .end((err, res) => {
                 res.should.have.property('text').that.equal('33');
@@ -73,23 +79,33 @@ describe('RequestHandling', () => {
             });
     });
 
-    it('returns an error if it cannot go through the middleware', (done) => {
+    it('returns an error if it cannot go through the middleware', done => {
         bind('TestMiddleware1', () => {
-            return function (data, next) {
-                return next("Cant go through!");
-            }
+            return function(data, next) {
+                return next('Cant go through!');
+            };
         });
 
-        use('Ivy/MiddlewareContainer').registerMiddleware('test1', 'TestMiddleware1');
+        use('Ivy/MiddlewareContainer').registerMiddleware(
+            'test1',
+            'TestMiddleware1'
+        );
 
-        use('Ivy/Router').get('/error', function (params) {
-            return params.id;
-        }, { middleware: 'test1' });
+        use('Ivy/Router').get(
+            '/error',
+            function(params) {
+                return params.id;
+            },
+            { middleware: 'test1' }
+        );
 
-        chai.request('http://localhost:3000')
+        chai
+            .request('http://localhost:3000')
             .get('/error')
             .end((err, res) => {
-                res.should.have.property('text').that.equals('Error piping through middleware. Cant go through!');
+                res.should.have
+                    .property('text')
+                    .that.equals('Error piping through middleware. Cant go through!');
                 res.should.have.property('statusCode').that.equals(500);
                 done();
             });

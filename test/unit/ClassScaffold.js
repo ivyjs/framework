@@ -1,8 +1,8 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    sinon = require('sinon'),
-    fs = require('fs'),
-    ClassScaffold = require('../../src/Console/Scaffold/ClassScaffold');
+const mocha = require('mocha');
+const chai = require('chai');
+const sinon = require('sinon');
+const fs = require('fs');
+const ClassScaffold = require('../../src/Console/Scaffold/ClassScaffold');
 
 chai.should();
 
@@ -16,14 +16,19 @@ describe('ClassScaffold', () => {
     });
 
     it('add new method', () => {
-        scaffold.addMethod('test', 'Good one here', ['param1', 'param2'], 'return "cool";');
+        scaffold.addMethod(
+            'test',
+            'Good one here',
+            ['param1', 'param2'],
+            'return "cool";'
+        );
 
         scaffold.methodList.should.have.property('length').that.equal(1);
         scaffold.methodList[0].should.deep.equals({
-            'name': 'test',
-            'comment': 'Good one here',
-            'param': 'param1, param2',
-            'body': 'return "cool";'
+            name: 'test',
+            comment: 'Good one here',
+            param: 'param1, param2',
+            body: 'return "cool";'
         });
     });
 
@@ -36,7 +41,9 @@ describe('ClassScaffold', () => {
         scaffold.methodList = [];
         scaffold.addMethod('test', 'Good one here', ['param1', 'param2']);
         scaffold.generateTemplate();
-        scaffold.template.should.equal("class @{className} {\n\n\t/**\n\t* Good one here\n\t**/\n\ttest(param1, param2) {\n\t\t\n\t}\n}\n\nnamespace(\'App/Test/@{className}\', @{className});");
+        scaffold.template.should.equal(
+            "class @{className} {\n\n\t/**\n\t* Good one here\n\t**/\n\ttest(param1, param2) {\n\t\t\n\t}\n}\n\nnamespace('App/Test/@{className}', @{className});"
+        );
     });
 
     it('generates a file', () => {

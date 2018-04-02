@@ -1,20 +1,20 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    ObjectHelper = require('../../src/Util/ObjectHelper');
+const mocha = require('mocha');
+const chai = require('chai');
+const ObjectHelper = require('../../src/Util/ObjectHelper');
 
 chai.should();
 
-describe('ObjectHelper', function () {
+describe('ObjectHelper', function() {
     let helper;
 
     before(() => {
         helper = new ObjectHelper();
         helper.collection = {
-            'app': {
-                'test': {
-                    'fillable': '123'
+            app: {
+                test: {
+                    fillable: '123'
                 },
-                'good': 'bad'
+                good: 'bad'
             }
         };
     });
@@ -30,10 +30,10 @@ describe('ObjectHelper', function () {
 
     it('returns value if key exists for get', () => {
         helper.get('app').should.be.deep.equal({
-            'test': {
-                'fillable': '123'
+            test: {
+                fillable: '123'
             },
-            'good': 'bad'
+            good: 'bad'
         });
     });
 
@@ -47,10 +47,10 @@ describe('ObjectHelper', function () {
 
     it('returns level 0 value if key exists for dot notation getter', () => {
         helper.getWithDotNotation('app').should.be.deep.equal({
-            'test': {
-                'fillable': '123'
+            test: {
+                fillable: '123'
             },
-            'good': 'bad'
+            good: 'bad'
         });
     });
 
@@ -60,5 +60,5 @@ describe('ObjectHelper', function () {
 
     it('returns default value when key is not found', () => {
         helper.getWithDotNotation('app.test.t', 'good').should.be.equal('good');
-    })
+    });
 });

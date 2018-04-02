@@ -1,8 +1,8 @@
 module.exports = {
     /**
-     * Load application providers.
-     */
-    'providers': [
+   * Load application providers.
+   */
+    providers: [
         '../../src/Config/ServiceProvider',
         '../../src/Pipe/ServiceProvider',
         '../../src/Middleware/ServiceProvider',

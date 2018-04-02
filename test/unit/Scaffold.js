@@ -1,8 +1,8 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    sinon = require('sinon'),
-    Scaffold = require('../../src/Console/Scaffold'),
-    fs = require('fs');
+const mocha = require('mocha');
+const chai = require('chai');
+const sinon = require('sinon');
+const Scaffold = require('../../src/Console/Scaffold');
+const fs = require('fs');
 
 chai.should();
 
@@ -11,7 +11,9 @@ describe('Scaffold', () => {
 
     it('adds custom template', () => {
         scaffold = new Scaffold('good @{text} is here!');
-        scaffold.should.have.property('template').that.equals('good @{text} is here!');
+        scaffold.should.have
+            .property('template')
+            .that.equals('good @{text} is here!');
     });
 
     it('binds variables', () => {

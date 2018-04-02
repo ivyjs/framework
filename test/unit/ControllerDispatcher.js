@@ -1,7 +1,7 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    sinon = require('sinon'),
-    ControllerDispatcher = require('../../src/Router/ControllerDispatcher');
+const mocha = require('mocha');
+const chai = require('chai');
+const sinon = require('sinon');
+const ControllerDispatcher = require('../../src/Router/ControllerDispatcher');
 
 chai.should();
 
@@ -12,14 +12,16 @@ describe('ControllerDispatcher', () => {
         app().make.restore();
     });
 
-    it('dispatches a route', async () => {
+    it('dispatches a route', async() => {
         sinon.stub(app(), 'make').returns({
-            goodHandler: function (param) {
+            goodHandler: function(param) {
                 return param;
             }
         });
 
-        (await ControllerDispatcher.dispatchRoute('TestNamespace@goodHandler', ['test'])).should.equal('test');
+        (await ControllerDispatcher.dispatchRoute('TestNamespace@goodHandler', [
+            'test'
+        ])).should.equal('test');
         app().make.restore();
-    })
+    });
 });

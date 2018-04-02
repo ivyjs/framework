@@ -1,6 +1,6 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    Config = require('../../src/Config');
+const mocha = require('mocha');
+const chai = require('chai');
+const Config = require('../../src/Config');
 
 chai.should();
 
@@ -23,7 +23,9 @@ describe('Config', () => {
 
     it('loads config from file', () => {
         config.loadConfig('app', require('./configs/app'));
-        config.configs.collection.should.have.property('app').that.deep.equals(require('./configs/app'));
+        config.configs.collection.should.have
+            .property('app')
+            .that.deep.equals(require('./configs/app'));
     });
 
     it('returns property with dot notation, default if not found', () => {
@@ -34,5 +36,4 @@ describe('Config', () => {
     it('loads configs from root dir', () => {
         config.loadEnvConfigs();
     });
-
 });

@@ -1,7 +1,7 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    server = require('../..');
-let Helper = use('Ivy/Helper');
+const mocha = require('mocha');
+const chai = require('chai');
+const Helper = use('Ivy/Helper');
+require('../..');
 
 chai.should();
 
@@ -9,7 +9,7 @@ describe('Helper', () => {
     it('adds characted for the remaining space', () => {
         Helper.padEnd('good', 5, ' ').should.equal('good ');
     });
-    
+
     it('make string length 0 if length not provided', () => {
         Helper.padEnd('good', false, '*').should.equal('good');
     });

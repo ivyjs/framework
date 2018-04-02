@@ -1,8 +1,9 @@
-let mocha = require('mocha'),
-    chai = require('chai'),
-    sinon = require('sinon'),
-    Commander = require('../../src/Console'),
-    Command = require('../../src/Console/Commands/Command');
+const mocha = require('mocha');
+const chai = require('chai');
+const sinon = require('sinon');
+const server = require('../..');
+const Commander = require('../../src/Console');
+const Command = require('../../src/Console/Commands/Command');
 
 chai.should();
 
@@ -15,13 +16,20 @@ describe('Commander', () => {
     });
 
     it('returns a new command builder', () => {
-        commander.register('test:command').execute(() => { return 'cool command'; }).should.be.instanceOf(Command);
+        commander
+            .register('test:command')
+            .execute(() => {
+                return 'cool command';
+            })
+            .should.be.instanceOf(Command);
     });
 
     it('registers a new command', () => {
         commander.commandsContainer.should.have.property('test:command');
         commander.commandsContainer['test:command'].should.be.instanceOf(Command);
-        commander.commandsContainer['test:command'].should.have.property('commandName').that.equals('test:command');
+        commander.commandsContainer['test:command'].should.have
+            .property('commandName')
+            .that.equals('test:command');
     });
 
     it('returns a list of commands', () => {
@@ -30,9 +38,9 @@ describe('Commander', () => {
     });
 
     it('filters the arguments list', () => {
-        let arguments = ['23', '--test'];
+        const argumentsList = ['23', '--test'];
 
-        commander.filterArguments(arguments).should.deep.equal({
+        commander.filterArguments(argumentsList).should.deep.equal({
             parameters: ['23'],
             options: ['--test']
         });
@@ -60,5 +68,5 @@ describe('Commander', () => {
     it('executes a command', () => {
         commander.run(['test:command']);
         console.log.should.be.called;
-    })
+    });
 });
